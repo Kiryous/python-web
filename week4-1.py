@@ -1,39 +1,42 @@
-class lib:
-	
-	def __init__(self):
-		self.name = ''
-		self.book = dict()
+class Library:
+	def __init__(self, string):
+		self.books = dict()
+
+		for pair in self.get_pairs(string.split(" ")):
+			title, count = pair
+			self.insert_book(title, int(count))
 		
 	def __del__(self):
-		pass
+		del self.books
 	
-	def insert_book(self, name, num):
-		self.book[name] = num
+	def get_pairs(self, l):
+		return [l[i:i+2] for i in range(0, len(l), 2)]
+	
+	def insert_book(self, title, count):
+		self.books[title] = count
 
-	def get_num_book(self, name):
-		return self.book[name]
+	def get_book_count(self, title):
+		if title not in self.books:
+			return
+		return self.books[title]
 	
-	def inc_book(self, name):
-		self.book[name] += 1
-		return self.book[name]
+	def inc_book(self, title):
+		self.books[title] += 1
+		return self.books[title]
 		
-	def dec_book(self, name):
-		self.book[name] -= 1
-		return self.book[name]
+	def dec_book(self, title):
+		self.books[title] -= 1
+		return self.books[title]
 	
-s = input()
+string = input()
+lib = Library(string)
 
-books = s.split(' ')[0::2]
-nums = s.split(' ')[1::2]
-
-bks = lib()
-
-s = ''
-
-for book, num in zip(books, nums):
-	bks.insert_book(book, int(num))
-	if s != '':
-		s += ' '
-	s += book + ' ' + str(bks.get_num_book(book)) + ' ' + str(bks.dec_book(book)) + ' ' + str(bks.inc_book(book))
-
-print(s)
+print(" ".join([
+	"{title} {count} {dec} {inc}".format(
+		title=book, 
+		count=lib.get_book_count(book),
+		dec=lib.dec_book(book),
+		inc=lib.inc_book(book)
+		)
+	for book in lib.books
+]))
